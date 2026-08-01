@@ -18,4 +18,9 @@ mongoose.connect(process.env.MONGO_URI).then(()=>console.log('Database connected
 // test route 
 app.get('/',(req,res)=>{
     res.send('todo API is running on port '+PORT);
+});
+
+//call the endpoint
+app.listen(PORT,()=>{
+    console.log(`server started at http://localhost:${PORT}`);
 })

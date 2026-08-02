@@ -12,5 +12,12 @@ const TodSchema = new mongoose.Schema({
      minlength:[5,'minimum 5 characters'],
      trim:true
     },
-    
+    completed:{
+        type:Boolean,
+        default:false
+    },
+    createdAt:{
+        type:Date,
+        default:Date.now
+    }
 })

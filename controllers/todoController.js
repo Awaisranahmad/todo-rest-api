@@ -1,67 +1,64 @@
-const Todo = require("../models/Todo");
-// post /todos
+// controllers/todoController.js
 
+const Todo = require('../models/Todo');
+
+// 1. POST /todos - Naya todo banana
 exports.createTodo = async (req, res) => {
   try {
     const { title, description } = req.body;
 
-    // validations
     if (!title || !description) {
       return res.status(400).json({
         success: false,
-        message: "Title and description are required",
+        message: 'Title and description are required'
       });
     }
-    // new databse TODO
+
     const newTodo = new Todo({
       title,
       description,
-      completed: req.body.completed || false,
+      completed: req.body.completed || false
     });
-    // save TODO in the database
+
     await newTodo.save();
+
     res.status(201).json({
       success: true,
-      message: "Todo Created Successfully",
-      data: newTodo,
+      message: 'Todo created successfully',
+      data: newTodo
     });
   } catch (error) {
-
-    // mongoose validation failssssss
-    if(error.name=== 'validationError'){
-        const errors =Object.values(error.errors).map(e=>e.message);
-        return res.status(400).json({
-            success:false,
-            message:'Validation Failed',
-            errors:errors
-        
-        });
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(e => e.message);
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: errors
+      });
     }
     res.status(500).json({
-        success:false,
-        message:'server error',
-        error:error.message
+      success: false,
+      message: 'Server error',
+      error: error.message
     });
   }
 };
 
-// get /todos
-exports.getAllTodos =async (req,res)=>{
-try {
-    const todos =(await Todo.find()).sort({created:-1});
-    //-1 means new first (shows the new one created)
+// 2. GET /todos - Saare todos lana (FIXED VERSION)
+exports.getAllTodos = async (req, res) => {
+  try {
+    const todos = await Todo.find().sort({ createdAt: -1 }); 
+
     res.status(200).json({
-        success:true,
-        count:todos.length,
-        data:todos
+      success: true,
+      count: todos.length,
+      data: todos
     });
-} catch (
-    error
-) {
+  } catch (error) {
     res.status(500).json({
-        success:false,
-        message:'server error',
-        error: error.message
+      success: false,
+      message: 'Server error',
+      error: error.message
     });
-}
+  }
 };

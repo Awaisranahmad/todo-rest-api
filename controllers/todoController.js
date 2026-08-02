@@ -44,3 +44,24 @@ exports.createTodo = async (req, res) => {
     });
   }
 };
+
+// get /todos
+exports.getAllTodos =async (req,res)=>{
+try {
+    const todos =(await Todo.find()).sort({created:-1});
+    //-1 means new first (shows the new one created)
+    res.status(200).json({
+        success:true,
+        count:todos.length,
+        data:todos
+    });
+} catch (
+    error
+) {
+    res.status(500).json({
+        success:false,
+        message:'server error',
+        error: error.message
+    });
+}
+};

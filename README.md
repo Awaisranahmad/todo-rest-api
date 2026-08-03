@@ -1,148 +1,174 @@
 # Todo REST API
 
-A RESTful API built with Node.js, Express, and MongoDB for managing a todo list. This is the backend for a todo application, supporting full CRUD operations.
+This project provides a Node.js, Express, and MongoDB based RESTful API for managing a simple todo list. The backend supports full CRUD (Create, Read, Update, Delete) operations.
 
-## 🚀 Features Implemented
+## Features
 
-- ✅ **Database Connection**: MongoDB Atlas (Cloud) integrated using Mongoose.
-- ✅ **Create Todo**: `POST /todos` - Add a new task.
-- ✅ **Get All Todos**: `GET /todos` - Retrieve all tasks (sorted by latest first).
-- ⏳ **Get Single Todo**: `GET /todos/:id` - (Coming Soon - Day 3)
-- ⏳ **Update Todo**: `PUT /todos/:id` - (Coming Soon - Day 3)
-- ⏳ **Delete Todo**: `DELETE /todos/:id` - (Coming Soon - Day 3)
-- ✅ **Input Validation**: Ensures title and description meet minimum length requirements.
-- ✅ **Error Handling**: Proper HTTP status codes (200, 201, 400, 500).
+- **Database Connection:** Connects to MongoDB Atlas using Mongoose for data persistence.  
+- **Create Todo:** `POST /todos` – Add a new todo item.  
+- **Get All Todos:** `GET /todos` – Retrieve all todos, sorted by creation date (latest first).  
+- **Input Validation:** Ensures that the title and description meet minimum length requirements.  
+- **Error Handling:** Returns appropriate HTTP status codes (e.g. 200, 201, 400, 500).
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Database**: MongoDB Atlas (Cloud)
-- **ODM**: Mongoose
-- **Environment Variables**: dotenv
-- **Dev Tool**: Nodemon
+- **Runtime:** Node.js  
+- **Framework:** Express.js  
+- **Database:** MongoDB Atlas (Cloud)  
+- **ODM:** Mongoose  
+- **Environment Variables:** dotenv  
+- **Development Tool:** Nodemon  
 
-## 📁 Project Structure
+## Project Structure
 
+```
 todo-backend/
 ├── models/
-│ └── Todo.js # MongoDB schema for Todo
+│   └── Todo.js           # Mongoose schema for Todo items
 ├── controllers/
-│ └── todoController.js # Business logic (POST, GET)
+│   └── todoController.js # Business logic for todo operations
 ├── routes/
-│ └── todoRoutes.js # API route definitions
-├── server.js # Main entry point
-├── .env # Environment variables (not pushed)
-├── package.json
-└── README.md
+│   └── todoRoutes.js     # API route definitions
+├── server.js             # Main server entry point
+├── .env                  # Environment variables (ignored by Git)
+├── package.json          # Project dependencies and scripts
+└── README.md             # Project documentation (this file)
+```
 
+## Getting Started
 
-## 🏁 Getting Started (Setup Instructions)
-
-Follow these steps to run the project locally:
+Follow these steps to set up and run the project locally:
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
-- MongoDB Atlas account (or local MongoDB)
+
+- Node.js (version 14 or higher)  
+- npm or Yarn  
+- MongoDB Atlas account (or a local MongoDB instance)
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/Awaisranahmad/todo-rest-api.git
    cd todo-rest-api
+   ```
 
 2. **Install dependencies**
-    npm install
 
-3. **Set up environment variables**
-Create a .env file in the root directory and add the following:  
-PORT=5000
-MONGO_URI=your_mongodb_atlas_connection_string 
-Replace your_mongodb_atlas_connection_string with your actual MongoDB URI.
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables**
+
+   Create a `.env` file in the project root with the following contents:
+
+   ```env
+   PORT=5000
+   MONGO_URI=<your_mongodb_atlas_connection_string>
+   ```
+
+   Replace `<your_mongodb_atlas_connection_string>` with your actual MongoDB connection URI.
 
 4. **Start the server**
-    npm run dev
-    the server will start http://localhost:500 .
 
-# 📡 API Documentation (Endpoints) #
+   ```bash
+   npm run dev
+   ```
 
-Method	Endpoint	Description	Status Codes
-POST	/todos	Create a new todo	201 (Created), 400 (Bad Request)
-GET	/todos	Get all todos	200 (OK)
-1. POST /todos (Create a Todo)
-Request Body (JSON):
-{
-  "title": "MongoDB Atlas setup karo",
-  "description": "Cluster banao aur Node.js se connect karo"
-}
+   The server will start and listen on `http://localhost:5000`.
 
-**Successful Response (201 Created):**
-{
-  "success": true,
-  "message": "Todo created successfully",
-  "data": {
+## API Endpoints
+
+### Create a New Todo
+
+- **Endpoint:** `POST /todos`  
+- **Description:** Create a new todo item.  
+- **Request Body (JSON):**
+
+  ```json
+  {
     "title": "MongoDB Atlas setup karo",
-    "description": "Cluster banao aur Node.js se connect karo",
-    "completed": false,
-    "_id": "6a6f2ba41b63b2f56c13abdc",
-    "createdAt": "2026-08-02T11:36:04.045Z",
-    "__v": 0
+    "description": "Cluster banao aur Node.js se connect karo"
   }
-}
-**Error Response (400 Bad Request - If fields missing):**
-{
-  "success": false,
-  "message": "Title and description are required"
-}
+  ```
 
-**2. GET /todos (Get All Todos)**
-Request: No body required. 
+- **Success Response (201 Created):**
 
-Successful Response (200 OK):
-{
-  "success": true,
-  "count": 2,
-  "data": [
-    {
-      "_id": "6a6f2e05822da08cdbaf9ab8",
-      "title": "Data enter",
-      "description": "Cluster12 banao aur Node.js se connect karo",
-      "completed": false,
-      "createdAt": "2026-08-02T11:46:13.468Z",
-      "__v": 0
-    },
-    {
-      "_id": "6a6f2ba41b63b2f56c13abdc",
+  ```json
+  {
+    "success": true,
+    "message": "Todo created successfully",
+    "data": {
       "title": "MongoDB Atlas setup karo",
       "description": "Cluster banao aur Node.js se connect karo",
       "completed": false,
+      "_id": "6a6f2ba41b63b2f56c13abdc",
       "createdAt": "2026-08-02T11:36:04.045Z",
       "__v": 0
     }
-  ]
-}
+  }
+  ```
 
-🧪 Testing
-This API was tested using Postman. Screenshots of successful requests are attached in the submission.
+- **Error Response (400 Bad Request):**
 
-POST Request: Successfully created a new todo (201 Created).
+  ```json
+  {
+    "success": false,
+    "message": "Title and description are required"
+  }
+  ```
 
-GET Request: Successfully retrieved all todos (200 OK).
+### Get All Todos
 
-MongoDB Compass: Verified that data is persisted in MongoDB Atlas.
+- **Endpoint:** `GET /todos`  
+- **Description:** Retrieve all todo items (sorted by latest first).  
+- **Success Response (200 OK):**
 
-🔮 Upcoming Features (Day 3)
-GET /todos/:id (Get single todo by ID)
+  ```json
+  {
+    "success": true,
+    "count": 2,
+    "data": [
+      {
+        "_id": "6a6f2e05822da08cdbaf9ab8",
+        "title": "Data enter",
+        "description": "Cluster12 banao aur Node.js se connect karo",
+        "completed": false,
+        "createdAt": "2026-08-02T11:46:13.468Z",
+        "__v": 0
+      },
+      {
+        "_id": "6a6f2ba41b63b2f56c13abdc",
+        "title": "MongoDB Atlas setup karo",
+        "description": "Cluster banao aur Node.js se connect karo",
+        "completed": false,
+        "createdAt": "2026-08-02T11:36:04.045Z",
+        "__v": 0
+      }
+    ]
+  }
+  ```
 
-PUT /todos/:id (Update an existing todo)
+## Testing
 
-DELETE /todos/:id (Remove a todo)
+This API was tested using Postman. The following scenarios were verified:
 
-Centralized error handling middleware
+- **POST /todos:** Successfully created a new todo item (201 Created).  
+- **GET /todos:** Successfully retrieved all existing todos (200 OK).  
+- Data persistence was verified in MongoDB Atlas using MongoDB Compass.
 
-📧 Connect
-Author: Rana Awais Ahmad
+## Upcoming Features
 
-GitHub: Awaisranahmad
+The following features are planned for future development (Day 3):
+
+- **Get Single Todo:** `GET /todos/:id` – Retrieve a specific todo by its ID.  
+- **Update Todo:** `PUT /todos/:id` – Update an existing todo.  
+- **Delete Todo:** `DELETE /todos/:id` – Remove a todo item.  
+- **Centralized Error Handling:** Improved error management for the API.
+
+## Author
+
+**Rana Awais Ahmad**  
+GitHub: [Awaisranahmad](https://github.com/Awaisranahmad)

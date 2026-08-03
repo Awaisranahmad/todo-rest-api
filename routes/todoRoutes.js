@@ -1,6 +1,8 @@
 const express= require('express');
 const router =express.Router();
- const {createTodo, getAllTodos,getTodoById,updateTodo,deleteTodo}= require('../controllers/todoController');
+ const {createTodo, getAllTodos,getTodoById,updateTodo,deleteTodo
+
+ }= require('../controllers/todoController');
 // post function and the post route
 router.post('/',createTodo);
 
@@ -11,7 +13,7 @@ router.get('/',getAllTodos);
 
 // routes of day 3
  router.get('/:id',getTodoById);
- router.get('/:id',updateTodo);
- router.get('/:id',deleteTodo);
+ router.put('/:id',updateTodo);
+ router.delete('/:id',deleteTodo);
 
  module.exports=router;

@@ -62,3 +62,25 @@ exports.getAllTodos = async (req, res) => {
     });
   }
 };
+
+// day 3 
+exports.getTodoById =async (req, res)=>{
+  try{
+    // req.params.id 
+    const todo = await Todo.findById(req.params.id);
+
+    if(!todo){
+      return res.status(404).json({
+        success:false,
+        message:`Tod with id ${req.params.id} not found`
+      });
+    }
+    res.status(200).json({
+      success:true,
+      data:todo
+    })
+  }
+
+  
+  catch(error){}
+};

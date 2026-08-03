@@ -82,5 +82,18 @@ exports.getTodoById =async (req, res)=>{
   }
 
   
-  catch(error){}
+  catch(error){
+
+    if(error.name==='CastEror'){
+      return res.status(400).json({
+        success:false,
+        message:'Invalid ID format. Please provide a valid 24 character mongodb'
+      });
+    }
+     res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
 };

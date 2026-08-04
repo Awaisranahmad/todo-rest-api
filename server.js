@@ -2,8 +2,9 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-
+const todoRoutes = require('./routes/todoRoutes')
 const cors = require("cors");
+
 // App and setting
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -26,6 +27,9 @@ app.get("/", (req, res) => {
 const todoRoutes = require("./routes/todoRoutes");
 app.use("/todos", todoRoutes);
 
+//error handler
+const errorMiddleware= require('./middleware/errorMiddleware')
+app.use('/todos',todoRoutes);
 //call the endpoint
 app.listen(PORT, () => {
   console.log(`server started at http://localhost:${PORT}`);

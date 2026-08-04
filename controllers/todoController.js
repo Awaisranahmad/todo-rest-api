@@ -55,61 +55,40 @@ exports.getAllTodos =asyncHandler(async (req,res)=>{
 
 // day 3
 exports.getTodoById =asyncHandler( async (req, res) => {
+const todo =await Todo.findById(req.params.id);
+  if(!todo){
+    res.status(404);
+    throw new Error('todo id not fond')
 
+
+}
+res.status(200).json({
+  success:true,
+  data:todo
+})
 });
 
 // put data by id
 
-exports.updateTodo = async (req, res) => {
-  try {
-    const { title, description, completed } = req.body;
-    const updateTodo = await Todo.findByIdAndUpdate(
-      req.params.id,
-      { title, description, completed },
-      { new: true, runValidators: true },
-
-      // new : true for update replace the old data otherwise it shows old data
-      // runvalidators:true mean all models rule all apply on the update data
+exports.updateTodo = asyncHandler(async (req, res) => {
+  const {title,description,completed}=req.body;
+   const updatedTodo = await Todo.findByIdAndUpdate(
+        req.params.id,
+        { title, description, completed },
+        { new: true, runValidators: true }
     );
 
-    // if id is corrcet but not exist in the database then
-    if (!updateTodo) {
-      return res.status(404).json({
-        success:false,
-        message  :`Todo with ID ${req.params.id} not found`
-      });
+    if (!updatedTodo) {
+        res.status(404);
+        throw new Error(`Todo with ID ${req.params.id} not found`);
     }
 
-    // show the updated data
     res.status(200).json({
-      success:true,
-      message:'todo updated successfully',
-      data:updateTodo
-    })
-  } catch (error) { // Agar validation fail ho (jaise title 3 letters se chhota ho)
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(e => e.message);
-      return res.status(400).json({
-        success: false,
-        message: 'Validation failed',
-        errors: errors
-      });
-    }
-    // Agar ID format galat ho
-    if (error.name === 'CastError') {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid ID format. Please provide a valid 24-character MongoDB ID.'
-      });
-    }
-    res.status(500).json({
-      success: false,
-      message: 'Server error',
-      error: error.message
+        success: true,
+        message: 'Todo updated successfully',
+        data: updatedTodo
     });
-  }
-};
-
+});
 
 // delete by id 
 

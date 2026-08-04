@@ -46,40 +46,17 @@ exports.createTodo = async (req, res) => {
 // 2. GET /todos  
 exports.getAllTodos =asyncHandler(async (req,res)=>{
   const todos = await Todo.find().sort({createdAt:-1});
-  
-})
+  res.status(200).json({
+    success:true,
+    count:todos.length,
+    data:todos
+  });
+});
 
 // day 3
-exports.getTodoById = async (req, res) => {
-  try {
-    // req.params.id
-    const todo = await Todo.findById(req.params.id);
+exports.getTodoById =asyncHandler( async (req, res) => {
 
-    if (!todo) {
-      return res.status(404).json({
-        success: false,
-        message: `Tod with id ${req.params.id} not found`,
-      });
-    }
-    res.status(200).json({
-      success: true,
-      data: todo,
-    });
-  } catch (error) {
-    if (error.name === "CastEror") {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Invalid ID format. Please provide a valid 24 character mongodb",
-      });
-    }
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
-  }
-};
+});
 
 // put data by id
 

@@ -1,19 +1,18 @@
 // controllers/todoController.js
 
+const { Error } = require("mongoose");
 const Todo = require("../models/Todo");
+const asyncHandler = require("../utils/asyncHandler");
 
 // 1. POST /todos - Naya todo banana
 exports.createTodo = async (req, res) => {
   try {
     const { title, description } = req.body;
 
-    if (!title || !description) {
-      return res.status(400).json({
-        success: false,
-        message: "Title and description are required",
-      });
-    }
-
+    if (!title || !description){
+      res.status(400);
+      throw new Error('Title and description are required');
+    };
     const newTodo = new Todo({
       title,
       description,
@@ -44,24 +43,11 @@ exports.createTodo = async (req, res) => {
   }
 };
 
-// 2. GET /todos - Saare todos lana (FIXED VERSION)
-exports.getAllTodos = async (req, res) => {
-  try {
-    const todos = await Todo.find().sort({ createdAt: -1 });
-
-    res.status(200).json({
-      success: true,
-      count: todos.length,
-      data: todos,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
-  }
-};
+// 2. GET /todos  
+exports.getAllTodos =asyncHandler(async (req,res)=>{
+  const todos = await Todo.find().sort({createdAt:-1});
+  
+})
 
 // day 3
 exports.getTodoById = async (req, res) => {

@@ -92,36 +92,17 @@ exports.updateTodo = asyncHandler(async (req, res) => {
 
 // delete by id 
 
-exports.deleteTodo =async (req,res)=>{
-try {
+exports.deleteTodo = asyncHandler(async (req, res) => {
+    const deletedTodo = await Todo.findByIdAndDelete(req.params.id);
 
-  const deleteTodo = await Todo.findByIdAndDelete(req.params.id);
-  if(!deleteTodo){
-    return res.status(404).json({
-      success:false,
-      message:'todo not find by this id'
-    });
-  }
-  res.status(200).json({
-    success:true,
-    data:deleteTodo,
-    message:'todo is deleted'
-  });
-
-  
-} catch (error) {
-  if (error.name === 'CastError') {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid ID format. Please provide a valid 24-character MongoDB ID.'
-      });
+    if (!deletedTodo) {
+        res.status(404);
+        throw new Error(`Todo with ID ${req.params.id} not found`);
     }
-    res.status(500).json({
-      success: false,
-      message: 'Server error',
-      error: error.message
+
+    res.status(200).json({
+        success: true,
+        message: 'Todo deleted successfully',
+        data: deletedTodo
     });
-  }
-}
-
-
+});

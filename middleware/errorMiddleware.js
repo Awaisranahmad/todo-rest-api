@@ -29,5 +29,7 @@ if(err.name=== 'CastError'){
         // Stack trace sirf development mein dikhao, production mein nahi
         ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
     });
-}
+};
+
+module.exports=errorMiddleware;
 

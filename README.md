@@ -1,38 +1,59 @@
-# Todo REST API
+# Todo REST API - Complete CRUD Backend
 
-This project provides a Node.js, Express, and MongoDB based RESTful API for managing a simple todo list. The backend supports full CRUD (Create, Read, Update, Delete) operations.
+A production-ready RESTful API built with **Node.js**, **Express**, and **MongoDB Atlas** for managing a todo list. This backend supports full **CRUD (Create, Read, Update, Delete)** operations with robust error handling and input validation.
 
-## Features
+> **Internship Project:** Backend Web Development Track (Week 1 Task)
 
-- **Database Connection:** Connects to MongoDB Atlas using Mongoose for data persistence.  
-- **Create Todo:** `POST /todos` – Add a new todo item.  
-- **Get All Todos:** `GET /todos` – Retrieve all todos, sorted by creation date (latest first).  
-- **Input Validation:** Ensures that the title and description meet minimum length requirements.  
-- **Error Handling:** Returns appropriate HTTP status codes (e.g. 200, 201, 400, 500).
+---
 
-## Tech Stack
+## 🚀 Features
 
-- **Runtime:** Node.js  
-- **Framework:** Express.js  
-- **Database:** MongoDB Atlas (Cloud)  
-- **ODM:** Mongoose  
-- **Environment Variables:** dotenv  
-- **Development Tool:** Nodemon  
+- ✅ **Full CRUD Operations:** Create, Read All, Read One (by ID), Update, and Delete todos.
+- ✅ **Real Database Integration:** Persistent storage using MongoDB Atlas (Cloud).
+- ✅ **Input Validation:** Automatic validation using Mongoose schemas (e.g., minimum length for title/description).
+- ✅ **Centralized Error Handling:** Professional error responses for validation failures, invalid IDs, and server errors.
+- ✅ **Async/Await & AsyncHandler:** Clean controller logic without repetitive try-catch blocks.
+- ✅ **Environment Variables:** Secure management of sensitive data using `dotenv`.
+- ✅ **CORS Enabled:** Ready to connect with any frontend application (React, Flutter, etc.).
 
-## Project Structure
+---
+
+## 🛠️ Tech Stack
+
+| Technology | Purpose |
+|------------|---------|
+| **Node.js** | JavaScript runtime environment |
+| **Express.js** | Web framework for building REST APIs |
+| **MongoDB Atlas** | Cloud-based NoSQL database |
+| **Mongoose** | ODM (Object Data Modeling) library for MongoDB |
+| **dotenv** | Environment variable management |
+| **Nodemon** | Development tool for auto-restarting the server |
+| **Postman** | API testing and documentation |
+
+---
+
+## 📁 Project Structure
+
 
 ```
 todo-backend/
+todo-backend/
 ├── models/
-│   └── Todo.js           # Mongoose schema for Todo items
+│ └── Todo.js # Mongoose schema & model
 ├── controllers/
-│   └── todoController.js # Business logic for todo operations
+│ └── todoController.js # Business logic (CRUD operations)
 ├── routes/
-│   └── todoRoutes.js     # API route definitions
-├── server.js             # Main server entry point
-├── .env                  # Environment variables (ignored by Git)
-├── package.json          # Project dependencies and scripts
-└── README.md             # Project documentation (this file)
+│ └── todoRoutes.js # API route definitions
+├── middleware/
+│ └── errorMiddleware.js # Centralized error handler
+├── utils/
+│ └── asyncHandler.js # Wrapper to catch async errors
+├── screenshots/ # Postman test screenshots (optional)
+├── server.js # Main application entry point
+├── .env # Environment variables (ignored by Git)
+├── .gitignore # Files/folders ignored by Git
+├── package.json # Dependencies and scripts
+└── README.md # Project documentati
 ```
 
 ## Getting Started
@@ -119,6 +140,70 @@ Follow these steps to set up and run the project locally:
     "message": "Title and description are required"
   }
   ```
+  
+### GET /todos/:id (Get Single Todo):
+
+  ```json
+  {
+  "success": true,
+  "data": {
+    "_id": "66a1b2c3d4e5f67890abcd12",
+    "title": "Learn Backend Development",
+    "description": "Complete the internship task",
+    "completed": false,
+    "createdAt": "2026-08-04T10:00:00.000Z"
+  }}
+  ```
+  
+   - **Error Response (400 Bad Request):**
+
+  ```json
+  {
+    "success": false,
+    "message": "Title and description are required"
+  }
+  ```
+ ###  PUT /todos/:id (Update a Todo):
+ 
+   **Request Body (JSON):** 
+   ```json
+      {
+  "title": "Backend Development Completed",
+  "description": "Successfully built the REST API",
+  "completed": true
+}
+```
+   - **Success Response (200 OK):**
+
+  ```json
+  {
+  "success": true,
+  "message": "Todo updated successfully",
+  "data": {
+    "_id": "66a1b2c3d4e5f67890abcd12",
+    "title": "Backend Development Completed",
+    "description": "Successfully built the REST API",
+    "completed": true,
+    "createdAt": "2026-08-04T10:00:00.000Z"
+  }
+}
+  ```      
+### DELETE /todos/:id (Delete a Todo)
+- **Success Response (200 OK):**
+  
+  ```json
+  {
+  "success": true,
+  "message": "Todo deleted successfully",
+  "data": {
+    "_id": "66a1b2c3d4e5f67890abcd12",
+    "title": "Backend Development Completed",
+    "description": "Successfully built the REST API",
+    "completed": true
+  } }
+
+  ```  
+    
 
 ### Get All Todos
 
@@ -159,14 +244,27 @@ This API was tested using Postman. The following scenarios were verified:
 - **GET /todos:** Successfully retrieved all existing todos (200 OK).  
 - Data persistence was verified in MongoDB Atlas using MongoDB Compass.
 
-## Upcoming Features
+##🧪 Error Handling Strategy
 
-The following features are planned for future development (Day 3):
+The API uses a Centralized Error Handling Middleware to catch all errors in one place, eliminating repetitive `try-catch` blocks in controllers.
 
-- **Get Single Todo:** `GET /todos/:id` – Retrieve a specific todo by its ID.  
-- **Update Todo:** `PUT /todos/:id` – Update an existing todo.  
-- **Delete Todo:** `DELETE /todos/:id` – Remove a todo item.  
-- **Centralized Error Handling:** Improved error management for the API.
+- **Validation Errors (`400 Bad Request`):** Triggered when a field fails Mongoose validation (e.g., title shorter than 3 characters).  
+- **Cast Errors (`400 Bad Request`):** Triggered when an invalid ID format is provided. 
+- **Not Found Errors (`404 Not Found`):** Triggered when a todo with the given ID does not exist in the database. 
+- **Server Errors (500 Internal Server Error):** Triggered for any unexpected server-side issues.
+
+### 📸 Postman Testing Screenshots
+(Add your screenshots here after taking them)
+
+**POST** `/todos` – 201 Created
+<img width="1185" height="973" alt="Screenshot 2026-08-02 163622" src="https://github.com/user-attachments/assets/0e3163a4-59fe-4182-89a5-78e41c0072a1" />
+
+**GET** `/todos/:id` – 200 OK
+<img width="1025" height="860" alt="Screenshot 2026-08-02 164709" src="https://github.com/user-attachments/assets/8fb52c81-2cc5-49d3-ae1e-1705fbc765c8" />
+
+**DELETE** `/todos/:id` – 200 OK
+<img width="941" height="1007" alt="Screenshot 2026-08-03 202529" src="https://github.com/user-attachments/assets/c85ba5e4-9a30-4e0b-86cc-caff10eadc5f" />
+
 
 ## Author
 

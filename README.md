@@ -53,7 +53,7 @@ todo-backend/
 ├── .env # Environment variables (ignored by Git)
 ├── .gitignore # Files/folders ignored by Git
 ├── package.json # Dependencies and scripts
-└── README.md # Project documentati
+└── README.md # Project documentation
 ```
 
 ## Getting Started
@@ -268,5 +268,5 @@ The API uses a Centralized Error Handling Middleware to catch all errors in one 
 
 ## Author
 
-**Rana Awais Ahmad**  
+**Rana Awais Ahmad** 
 GitHub: [Awaisranahmad](https://github.com/Awaisranahmad)

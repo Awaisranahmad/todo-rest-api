@@ -3,7 +3,11 @@
 
 
 const errorMiddleware =(err,req,res,next)=>{
-    let statusCode =res.statusCode === 200? 500:res.statusCode; // for default eror 500
+    // Priority: an explicit statusCode set on the error wins (e.g. a
+    // controller throwing a 400 for missing fields), then the status
+    // already set on the response (e.g. res.status(404) before throwing),
+    // otherwise default to 500.
+    let statusCode = err.statusCode || (res.statusCode === 200 ? 500 : res.statusCode);
     // default message if message not found
     let message= err.message||'something wrong in the sever';
 // case 1.castError
@@ -15,7 +19,7 @@ if(err.name=== 'CastError'){
  // CASE 2:  (ValidationError)
     if (err.name === 'ValidationError') {
         statusCode = 400;
-        
+
         const errors = Object.values(err.errors).map(e => e.message);
         message = `Validation failed: ${errors.join('. ')}`;
     }
@@ -32,4 +36,3 @@ if(err.name=== 'CastError'){
 };
 
 module.exports=errorMiddleware;
-

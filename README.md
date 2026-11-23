@@ -48,6 +48,8 @@ todo-backend/
 │ └── errorMiddleware.js # Centralized error handler
 ├── utils/
 │ └── asyncHandler.js # Wrapper to catch async errors
+├── tests/ # Automated tests (node:test, no database needed)
+├── .env.example # Example environment variables
 ├── screenshots/ # Postman test screenshots (optional)
 ├── server.js # Main application entry point
 ├── .env # Environment variables (ignored by Git)
@@ -238,10 +240,23 @@ Follow these steps to set up and run the project locally:
 
 ## Testing
 
-This API was tested using Postman. The following scenarios were verified:
+Automated tests run with Node's built-in test runner — no database needed:
 
-- **POST /todos:** Successfully created a new todo item (201 Created).  
-- **GET /todos:** Successfully retrieved all existing todos (200 OK).  
+```bash
+npm test
+```
+
+21 tests cover the error middleware (CastError → 400, ValidationError → 400,
+explicit `statusCode` honoured, stack trace hidden outside development),
+the Todo schema validation (required fields, min lengths, trimming),
+the `asyncHandler` wrapper, the `createTodo` 400 regression (missing
+title/description used to answer 500), and the server wiring (the `/todos`
+router mounted once, error handler registered after the routes).
+
+This API was also tested using Postman. The following scenarios were verified:
+
+- **POST /todos:** Successfully created a new todo item (201 Created).
+- **GET /todos:** Successfully retrieved all existing todos (200 OK).
 - Data persistence was verified in MongoDB Atlas using MongoDB Compass.
 
 ##🧪 Error Handling Strategy
@@ -265,6 +280,26 @@ The API uses a Centralized Error Handling Middleware to catch all errors in one 
 **DELETE** `/todos/:id` – 200 OK
 <img width="941" height="1007" alt="Screenshot 2026-08-03 202529" src="https://github.com/user-attachments/assets/c85ba5e4-9a30-4e0b-86cc-caff10eadc5f" />
 
+## Changelog
+
+### 2026-11-23 — Error handling actually wired up + tests
+- **Fixed:** the centralized error middleware was required in `server.js`
+  but never registered with `app.use()`, so every error fell through to
+  Express's default HTML error page. It is now registered after all routes.
+- **Fixed:** `app.use('/todos', todoRoutes)` was mounted twice — now once.
+- **Fixed:** `POST /todos` without title/description answered **500**
+  instead of 400 (the old try/catch only mapped `ValidationError` to 400).
+  `createTodo` now uses `asyncHandler` like the other controllers and throws
+  an error with `statusCode: 400`; the error middleware honours it.
+- **Fixed:** typo in the not-found message (`'todo id not fond'` →
+  `'Todo id not found'`).
+- **Fixed:** `package.json` said `"main": "index.js"` but the entry point is
+  `server.js`.
+- **Added:** `tests/` — 21 automated tests (`npm test`, no database needed)
+  covering the error middleware, Todo validation, `asyncHandler`, the
+  `createTodo` 400 regression, and the server wiring.
+- **Added:** `.env.example`; `server.js` now exports the app and only
+  listens when run directly, so it can be imported by tests.
 
 ## Author
 

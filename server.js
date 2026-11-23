@@ -2,18 +2,20 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-// const todoRoutes = require('./routes/todoRoutes')
 const cors = require("cors");
+
+const todoRoutes = require("./routes/todoRoutes");
+const errorMiddleware = require("./middleware/errorMiddleware");
 
 // App and setting
 const app = express();
 const PORT = process.env.PORT || 5000;
-//Middleware   security guards
+
+// Middleware - security guards
 app.use(cors());
 app.use(express.json());
 
 // Database
-
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("Database connected Successfully!"))
@@ -23,14 +25,21 @@ mongoose
 app.get("/", (req, res) => {
   res.send("todo API is running on port " + PORT);
 });
-//todo routes
-const todoRoutes = require("./routes/todoRoutes");
+
+// todo routes (registered once — previously mounted twice)
 app.use("/todos", todoRoutes);
 
-//error handler
-const errorMiddleware= require('./middleware/errorMiddleware')
-app.use('/todos',todoRoutes);
-//call the endpoint
-app.listen(PORT, () => {
-  console.log(`server started at http://localhost:${PORT}`);
-});
+// Centralized error handler — must come AFTER all routes so that errors
+// forwarded with next(err) (e.g. from asyncHandler) reach it instead of
+// Express's default HTML error page.
+app.use(errorMiddleware);
+
+// Only start listening when run directly (`node server.js`).
+// Importing this file (e.g. from tests) gets the app without binding a port.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`server started at http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

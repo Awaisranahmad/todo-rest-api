@@ -1,49 +1,37 @@
 // controllers/todoController.js
 
-const { Error } = require("mongoose");
 const Todo = require("../models/Todo");
 const asyncHandler = require("../utils/asyncHandler");
 
 // 1. POST /todos - Naya todo banana
-exports.createTodo = async (req, res) => {
-  try {
-    const { title, description } = req.body;
+exports.createTodo = asyncHandler(async (req, res) => {
+  const { title, description } = req.body;
 
-    if (!title || !description){
-      res.status(400);
-      throw new Error('Title and description are required');
-    };
-    const newTodo = new Todo({
-      title,
-      description,
-      completed: req.body.completed || false,
-    });
-
-    await newTodo.save();
-
-    res.status(201).json({
-      success: true,
-      message: "Todo created successfully",
-      data: newTodo,
-    });
-  } catch (error) {
-    if (error.name === "ValidationError") {
-      const errors = Object.values(error.errors).map((e) => e.message);
-      return res.status(400).json({
-        success: false,
-        message: "Validation failed",
-        errors: errors,
-      });
-    }
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
+  if (!title || !description) {
+    // statusCode travels with the error so the centralized error
+    // middleware answers 400 (previously this fell through to a 500,
+    // because the old try/catch only mapped ValidationError to 400).
+    const error = new Error("Title and description are required");
+    error.statusCode = 400;
+    throw error;
   }
-};
 
-// 2. GET /todos  
+  const newTodo = new Todo({
+    title,
+    description,
+    completed: req.body.completed || false,
+  });
+
+  await newTodo.save();
+
+  res.status(201).json({
+    success: true,
+    message: "Todo created successfully",
+    data: newTodo,
+  });
+});
+
+// 2. GET /todos
 exports.getAllTodos =asyncHandler(async (req,res)=>{
   const todos = await Todo.find().sort({createdAt:-1});
   res.status(200).json({
@@ -58,7 +46,7 @@ exports.getTodoById =asyncHandler( async (req, res) => {
 const todo =await Todo.findById(req.params.id);
   if(!todo){
     res.status(404);
-    throw new Error('todo id not fond')
+    throw new Error('Todo id not found')
 
 
 }
@@ -90,7 +78,7 @@ exports.updateTodo = asyncHandler(async (req, res) => {
     });
 });
 
-// delete by id 
+// delete by id
 
 exports.deleteTodo = asyncHandler(async (req, res) => {
     const deletedTodo = await Todo.findByIdAndDelete(req.params.id);
